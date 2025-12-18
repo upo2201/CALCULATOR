@@ -16,25 +16,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: salmon;
+      background: #ffb3a7; /* light salmon */
     }
 
     body.dark {
-      background: #f28574; /* darker salmon */
+      background: #e07a6f; /* deep salmon */
     }
 
     .app {
       width: 100%;
       max-width: 380px;
-      background: salmon;
-      padding: 20px;
-      border-radius: 16px;
+      background: inherit;
+      padding: 22px;
+      border-radius: 18px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 #000;
     }
 
     h1 {
       text-align: center;
-      margin: 0 0 10px;
+      margin: 0 0 14px;
       font-size: 22px;
+      letter-spacing: 0.5px;
     }
 
     .top-bar {
@@ -47,53 +50,63 @@
     .toggle {
       font-size: 14px;
       cursor: pointer;
-      border: 1px solid black;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: salmon;
+      border: 2px solid #000;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: inherit;
+      box-shadow: 3px 3px 0 #000;
+    }
+
+    .toggle:active {
+      box-shadow: 1px 1px 0 #000;
+      transform: translate(2px, 2px);
     }
 
     #display {
       width: 100%;
-      height: 60px;
+      height: 64px;
       font-size: 34px;
       text-align: right;
-      padding: 10px;
-      border: 1px solid black;
-      border-radius: 10px;
-      background: salmon;
+      padding: 10px 14px;
+      border: 2px solid #000;
+      border-radius: 12px;
+      background: inherit;
       outline: none;
       caret-color: black;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      box-shadow: inset 4px 4px 0 rgba(0,0,0,0.2);
     }
 
     .buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
     button {
-      height: 52px;
+      height: 54px;
       font-size: 18px;
       font-weight: 600;
-      background: salmon;
-      border: 1px solid black;
-      border-radius: 10px;
+      background: inherit;
+      border: 2px solid #000;
+      border-radius: 12px;
       cursor: pointer;
+      box-shadow: 4px 4px 0 #000;
     }
 
-    button:hover {
-      opacity: 0.85;
+    button:active {
+      box-shadow: 1px 1px 0 #000;
+      transform: translate(3px, 3px);
     }
 
     .equal {
       grid-column: span 2;
+      font-size: 20px;
     }
 
     .history {
-      margin-top: 14px;
-      border-top: 1px solid black;
+      margin-top: 16px;
+      border-top: 2px solid #000;
       padding-top: 10px;
       max-height: 120px;
       overflow-y: auto;
@@ -107,7 +120,7 @@
     .history-item {
       font-size: 14px;
       cursor: pointer;
-      padding: 2px 0;
+      padding: 3px 0;
     }
 
     .history-item:hover {
@@ -118,6 +131,7 @@
       .app {
         border-radius: 0;
         min-height: 100vh;
+        box-shadow: none;
       }
     }
   </style>
@@ -130,7 +144,8 @@
       <div class="toggle" id="themeToggle">Dark</div>
     </div>
 
-    <input id="display" type="text" value="0">
+    <!-- readonly but caret still works -->
+    <input id="display" type="text" value="0" readonly>
 
     <div class="buttons">
       <button>C</button>
@@ -173,21 +188,10 @@
 
     const operators = ["+", "-", "*", "/", "%"];
 
-    // Focus behavior
-    display.addEventListener("focus", () => {
-      if (display.value === "0") display.value = "";
-    });
-
-    display.addEventListener("blur", () => {
-      if (display.value === "") display.value = "0";
-    });
-
-    // Theme toggle
     toggle.addEventListener("click", () => {
       document.body.classList.toggle("dark");
-      toggle.innerText = document.body.classList.contains("dark")
-        ? "Light"
-        : "Dark";
+      toggle.innerText =
+        document.body.classList.contains("dark") ? "Light" : "Dark";
     });
 
     function addToHistory(expr, result) {
@@ -208,10 +212,6 @@
         display.value = "Error";
       }
     }
-
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => handleInput(btn.innerText));
-    });
 
     function handleInput(value) {
       if (value === "C") {
@@ -257,16 +257,26 @@
       }
     }
 
-    // Keyboard support
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => handleInput(btn.innerText));
+    });
+
+    // Keyboard support (NO duplication now)
     document.addEventListener("keydown", e => {
       if ((e.key >= "0" && e.key <= "9") || operators.includes(e.key) || e.key === ".") {
+        e.preventDefault();
         handleInput(e.key);
-      } else if (e.key === "Enter") {
+      } 
+      else if (e.key === "Enter") {
         e.preventDefault();
         calculate();
-      } else if (e.key === "Backspace") {
+      } 
+      else if (e.key === "Backspace") {
+        e.preventDefault();
         handleInput("⌫");
-      } else if (e.key === "Escape") {
+      } 
+      else if (e.key === "Escape") {
+        e.preventDefault();
         handleInput("C");
       }
     });
