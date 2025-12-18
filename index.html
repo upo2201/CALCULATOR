@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Calculator</title>
+
+  <style>
+    body {
+      text-align: center;
+      font-family: system-ui, sans-serif;
+    }
+
+    /* Display */
+    #display {
+      width: 320px;
+      height: 60px;
+      margin: 20px auto;
+      display: block;
+
+      background-color: salmon;
+      color: #1f2937;        /* 👈 FIX: visible text */
+      font-size: 36px;
+      font-weight: 600;
+
+      text-align: right;     /* 👈 calculator-style */
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    /* Buttons container */
+    .buttons {
+      width: 320px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .number-button {
+      height: 55px;
+      font-size: 20px;
+      font-weight: 600;
+
+      background-color: salmon;
+      color: #1f2937;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .number-button:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+
+<body>
+
+  <input id="display" type="text" readonly>
+
+  <div class="buttons">
+    <button class="number-button">C</button>
+    <button class="number-button">(</button>
+    <button class="number-button">)</button>
+    <button class="number-button">%</button>
+
+    <button class="number-button">7</button>
+    <button class="number-button">8</button>
+    <button class="number-button">9</button>
+    <button class="number-button">*</button>
+
+    <button class="number-button">4</button>
+    <button class="number-button">5</button>
+    <button class="number-button">6</button>
+    <button class="number-button">-</button>
+
+    <button class="number-button">1</button>
+    <button class="number-button">2</button>
+    <button class="number-button">3</button>
+    <button class="number-button">+</button>
+
+    <button class="number-button">+/-</button>
+    <button class="number-button">0</button>
+    <button class="number-button">.</button>
+    <button class="number-button">=</button>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+    const buttons = document.querySelectorAll(".number-button");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const value = button.innerText;
+
+        if (value === "C") {
+          display.value = "";
+        } 
+        else if (value === "=") {
+          try {
+            display.value = eval(display.value);
+          } catch {
+            display.value = "Error";
+          }
+        } 
+        else if (value === "+/-") {
+          if (display.value) {
+            display.value = display.value.startsWith("-")
+              ? display.value.slice(1)
+              : "-" + display.value;
+          }
+        } 
+        else {
+          display.value += value;
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
